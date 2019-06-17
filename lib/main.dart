@@ -12,9 +12,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Prayers extends StatefulWidget {
+  @override
+  PrayersState createState() => PrayersState();
+}
+
 class PrayersState extends State<Prayers> {
 
   final _style = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+
+  final List<String> _currentPrayers = <String>['Iyanu', 'Ire', 'Seun'];
+  final List<String> _thanksgivingPrayers = <String>[];
+  final List<String> _manifestedPrayers = <String>[];
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +43,92 @@ class PrayersState extends State<Prayers> {
         ),
         body: TabBarView(
           children: [
-            Text('List of Prayer points', style: _style),
-            Text('List of Prayers that have moved to Thanks-giving', style: _style),
-            Text('List of Prayers that have manifested', style: _style)            
+            _buildCurrent(),
+            _buildThanksGiving(),
+            _buildManifested()          
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+
+          },
+          child: Icon(Icons.thumb_up),
+          backgroundColor: Colors.green,
         ),
         
       ),
     );
+  }
+
+  Widget _buildCurrent() {
+    final bool _current = _currentPrayers.contains('value');
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: _currentPrayers.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          title: Text(_currentPrayers[index]),
+          trailing: Icon(
+            _current ? Icons.favorite : Icons.favorite_border,
+            color: _current ? Colors.red: null,
+          ),
+          onTap: () {
+            setState(() {
+              _thanksgivingPrayers.add(_currentPrayers[index]);
+              _currentPrayers.remove(_currentPrayers[index]);
+            });
+          },
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
     
   }
-}
 
-class Prayers extends StatefulWidget {
-  @override
-  PrayersState createState() => PrayersState();
+  Widget _buildThanksGiving () {
+    final bool _thanksgiving = _thanksgivingPrayers.contains('value');
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: _thanksgivingPrayers.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          title: Text(_thanksgivingPrayers[index]),
+          trailing: Icon(
+            _thanksgiving ? Icons.favorite: Icons.favorite_border,
+            color: _thanksgiving ? Colors.green: null,
+          ),
+          onTap: () {
+            setState(() {
+              _manifestedPrayers.add(_thanksgivingPrayers[index]);
+              _thanksgivingPrayers.remove(_thanksgivingPrayers[index]);
+            });
+          },
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
+  }
+
+  Widget _buildManifested () {
+    final bool _manifested = _manifestedPrayers.contains('value');
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: _manifestedPrayers.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          title: Text(_manifestedPrayers[index]),
+          trailing: Icon(
+            _manifested ? Icons.favorite: Icons.favorite_border,
+            color: _manifested ? Colors.green: null,
+          ),
+          // onTap: () {
+          //   setState(() {
+          //     _manifestedPrayers.add()
+          //   });
+          // },
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),      
+    );
+  }
 }
